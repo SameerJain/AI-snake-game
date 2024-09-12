@@ -1,11 +1,23 @@
 '''
-Q learning agent to play the classic snake game, using a nueral network to approximate the Q-value. 
-Training involves updating the q-network, and visualizing the learning progress, balance between exploitation and exploration
+Implements a Q-learning agent to play the classic Snake game. Uses a neural network to approximate the Q-value function, which helps the agent make decisions about which actions to take in different game states.
 
+Components:
+1. Agent: Manages the Q-learning process, including state representation, action selection, and learning.
+2. Neural Network: Approximates the Q-value function.
+3. Game Environment: A custom implementation of the Snake game for AI training.
+
+The training process involves:
+- Updating the Q-network based on experiences
+- Balancing exploration and exploitation
+- Visualizing the learning progress over time
+
+Dependencies:
+- torch: For neural network implementation
+- numpy: For numerical operations
+- collections: For efficient data structures
+- matplotlib (implied through helper.plot): For visualizing training progress
 '''
-# may need to set true in your conda enviroment but leave along ohterwise 
-#set KMP_DUPLICATE_LIB_OK=TRUE
-
+import os
 import torch
 import random
 import numpy as np
@@ -13,10 +25,17 @@ from collections import deque
 from game import SnakeGameAI, Direction, Point
 from model import Linear_QNet, QTrainer
 from helper import plot
+''' 
+may need to set this value to false depending on your machine. Test if it works or with True or False. This is a threading issue so don't be overly concerned.
+'''
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
-MAX_MEMORY = 100_000
-BATCH_SIZE = 1000
-LR = 0.001
+MAX_MEMORY = 100_000  # Max size of replay memory
+BATCH_SIZE = 1000     # Number of experiences to sample for batch learning
+'''
+Below is the Learning Rate! Feel fre to play around with this and watch the AI speed up or slow down
+'''
+LR = 0.01            
 
 class Agent:
 
@@ -30,8 +49,14 @@ class Agent:
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma) # init Q trainer, gamma)
 
 
-
-    # extract releveant game info,return feature vector representing the game state  
+    """
+        Extract relevant game information and return a feature vector representing the game state.
+        
+        This method creates a binary feature vector that encodes:
+        1. Danger in different directions
+        2. Current moving direction
+        3. Food location relative to the snake's head
+        """  
     def get_state(self, game):
         head = game.snake[0]
         point_l = Point(head.x - 20, head.y)
@@ -81,6 +106,11 @@ class Agent:
         self.memory.append((state, action, reward, next_state, done)) # popleft if MAX_MEMORY is reached
 #train model using experiences from the replay memory 
     def train_long_memory(self):
+        """
+        Train model using experiences from the replay memory.
+        This method implements experience replay, which helps to stabilize learning
+        by breaking the correlation between consecutive samples.
+        """
         if len(self.memory) > BATCH_SIZE:
             mini_sample = random.sample(self.memory, BATCH_SIZE) # list of tuples
         else:
@@ -88,14 +118,17 @@ class Agent:
 
         states, actions, rewards, next_states, dones = zip(*mini_sample)
         self.trainer.train_step(states, actions, rewards, next_states, dones)
-        #for state, action, reward, nexrt_state, done in mini_sample:
-        #    self.trainer.train_step(state, action, reward, next_state, done)
-    #train from single memory 
+
+    """Train from a single experience"""
     def train_short_memory(self, state, action, reward, next_state, done):
         self.trainer.train_step(state, action, reward, next_state, done)
-    #choose action based on current state 
-    #implement epsilon greedy strategy for exploitation and explanation 
-    #return chosen action as a one-hot vector 
+        
+        """
+        Choose action based on current state.
+        Implements epsilon-greedy strategy for balancing exploration and exploitation.
+        As more games are played, epsilon decreases, favoring exploitation over exploration.
+        """
+        
     def get_action(self, state):
         # random moves: tradeoff exploration / exploitation
         self.epsilon = 80 - self.n_games
@@ -120,12 +153,12 @@ flowchart:
     train agent's Q network with current experience
     remember experience in the replay memory 
 
-
     if done:
         train agent with experiences from memory 
         update the record if a new high score is chieved
         print result 
 '''
+
 def train():
     #hyperparameters
     plot_scores = []
