@@ -35,7 +35,7 @@ BATCH_SIZE = 1000     # Number of experiences to sample for batch learning
 '''
 Below is the Learning Rate! Feel fre to play around with this and watch the AI speed up or slow down
 '''
-LR = 0.01            
+LR = 0.001            
 
 class Agent:
 
