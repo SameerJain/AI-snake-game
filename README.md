@@ -1,3 +1,6 @@
+https://www.youtube.com/watch?v=RaI2uuSOi6c
+
+
 # Snake Game Q-Learning AI
 This project implements an AI agent that learns to play the classic Snake game using Q-learning, a type of reinforcement learning algorithm. The AI improves its performance over time by learning from its experiences in the game. NOTE: This uses Anaconda
 
