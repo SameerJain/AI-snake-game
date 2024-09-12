@@ -5,6 +5,13 @@ https://www.youtube.com/watch?v=RaI2uuSOi6c
 # Snake Game Q-Learning AI
 This project implements an AI agent that learns to play the classic Snake game using Q-learning, a type of reinforcement learning algorithm. The AI improves its performance over time by learning from its experiences in the game. NOTE: This uses Anaconda
 
+![Screenshot 2024-09-12 000142](https://github.com/user-attachments/assets/e300d3eb-b5f4-41e3-8bca-62c1dd5e1d7d)
+
+![i](https://github.com/user-attachments/assets/f4590a7e-2564-447c-838d-77f5bc090a36)
+
+![ui](https://github.com/user-attachments/assets/47bee492-8a45-4511-b356-6954971b5aae)
+
+
 ## Requirements
 
 Python 3.7+
